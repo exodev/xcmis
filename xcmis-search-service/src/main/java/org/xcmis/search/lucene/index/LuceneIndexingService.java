@@ -21,12 +21,15 @@ package org.xcmis.search.lucene.index;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.FieldInfo;
+import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.util.ReaderUtil;
 import org.apache.lucene.util.Version;
 import org.xcmis.search.config.IndexConfiguration;
 import org.xcmis.search.config.IndexConfigurationException;
@@ -84,10 +87,10 @@ public class LuceneIndexingService extends TransactionableIndexDataManager
    {
       final Set<String> fildsSet = new HashSet<String>();
       @SuppressWarnings("unchecked")
-      final Collection fields = super.getIndexReader().getFieldNames(IndexReader.FieldOption.ALL);
-      for (final Object field : fields)
+      final FieldInfos fields = ReaderUtil.getMergedFieldInfos(super.getIndexReader());
+      for (final FieldInfo field : fields)
       {
-         fildsSet.add((String)field);
+         fildsSet.add(field.name);
       }
       return fildsSet;
    }

@@ -37,6 +37,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
+import org.apache.lucene.index.FieldInfo;
+import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -49,6 +51,7 @@ import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.regex.RegexQuery;
 import org.apache.lucene.util.NumericUtils;
+import org.apache.lucene.util.ReaderUtil;
 import org.apache.lucene.util.Version;
 import org.xcmis.search.InvalidQueryException;
 import org.xcmis.search.QueryObjectModelVisitor;
@@ -1030,10 +1033,10 @@ public class LuceneQueryBuilder implements QueryObjectModelVisitor
    {
       final Set<String> fildsSet = new HashSet<String>();
       @SuppressWarnings("unchecked")
-      final Collection fields = indexReader.getFieldNames(IndexReader.FieldOption.ALL);
-      for (final Object field : fields)
+      final FieldInfos fields = ReaderUtil.getMergedFieldInfos(indexReader);
+      for (final FieldInfo field : fields)
       {
-         fildsSet.add((String)field);
+         fildsSet.add(field.name);
       }
       return fildsSet;
    }

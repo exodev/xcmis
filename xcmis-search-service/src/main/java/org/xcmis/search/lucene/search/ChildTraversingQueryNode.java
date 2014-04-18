@@ -191,7 +191,9 @@ public class ChildTraversingQueryNode extends Query
        */
       public int docID()
       {
-        return childScorer.docID();
+        int ret = childScorer == null ? 0 : childScorer.docID();
+        System.out.println("docId: " + ret);
+        return ret;
       }
 
       /**
@@ -224,7 +226,9 @@ public class ChildTraversingQueryNode extends Query
        */
       public float score() throws IOException
       {
-         return childScorer.score();
+        float ret = childScorer == null ? 0 : childScorer.score();
+        System.out.println("score: " + ret);
+         return ret;
       }
 
       /**
@@ -232,7 +236,10 @@ public class ChildTraversingQueryNode extends Query
        */
       public int advance(int target) throws IOException
       {
-         return childScorer.advance(target);
+        System.out.println("target: " + target);
+        int ret =  childScorer == null ? Integer.MAX_VALUE : childScorer.advance(target);
+        System.out.println("advance: " + ret);
+         return ret;
       }
 
       private Query createOrQuery(Query first, Query second)
@@ -290,6 +297,7 @@ public class ChildTraversingQueryNode extends Query
             log.debug("Sub query " + childQuery);
          }
          childScorer = childQuery.createWeight(searcher).scorer(reader, scoreDocsInOrder, topScorer);
+         System.out.println("childScorer: " + childScorer);
       }
 
    }
